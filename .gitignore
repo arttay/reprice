@@ -1,3 +1,5 @@
 node_modules
 /foo.csv
 rawCsv
+/tcg.csv
+outputCsv

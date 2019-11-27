@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "ri": "node index.js troll"
+    "ri": "node index.js troll",
+    "tcg": "node index.js tcg"
   },
   "author": "",
   "license": "ISC",
