@@ -6,12 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "ri": "node index.js troll",
+    "checkTroll": "node index.js troll check",
     "tcg": "node index.js tcg"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "csvtojson": "^2.0.10",
+    "json2csv": "^4.5.4",
+    "mv": "^2.1.1",
     "write": "^2.0.0"
   }
 }

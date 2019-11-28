@@ -4,6 +4,10 @@ const tcgCsvPath = "./rawCsv/tcg.csv"
 const { Parser } = require('json2csv');
 const fields = ['Product Id', 'Product Sku', 'Product Name', "Product Category", "Sales (Past Week)", "T&T Price", "Lowest Price", "Available", "*On Hold", "*My Price", "*My Cost", "Live Quantity"];
 const opts = { fields };
+const mv = require('mv');
+const path = require("path")
+
+
 
 const tcgFields = [
     "TCGplayer Id",
@@ -26,25 +30,27 @@ const tcgFields = [
 ];
 const tcgOps = { tcgFields }
 
-
+const shouldCheck = process.argv[3] === "check"
 
 const write = require('write');
 
-const repriceTroll = require('./troll.js')
+//const repriceTroll = require('./troll.js')
 //import repriceTroll from './troll.js'
 
 const site = process.argv[2]
 
-if (site === "troll") {
-    parseCsv("troll").then((data) => {
-        //console.log(data)
-
-      const parser = new Parser(opts);
-      const csv = parser.parse(data);
-      //console.log(csv);
-  
-      write.sync('foo.csv', csv); 
-    })
+if (site === "troll") { 
+    mv('/Users/art/Downloads/Inventory.csv', path.join(__dirname, "rawCsv/Inventory.csv"), function(err) {
+        if (!err) {
+            parseCsv("troll").then((data) => {
+                const parser = new Parser(opts);
+                const csv = parser.parse(data);
+                if (!shouldCheck) {
+                    write.sync('foo.csv', csv);  
+                }
+            })
+        }
+    });    
 } else if (site === "tcg") {
     parseCsv("tcg").then((data) => {
         //console.log(data)
@@ -76,7 +82,9 @@ function parseTroll (jsonObj) {
         item["*On Hold"] = 0
 
         if (Number(item["*My Price"]) > Number(item["Lowest Price"]) && item["Available"] !== item["Live Quantity"]) {
-            //console.log(item)
+            if (shouldCheck) {
+                console.log(item)
+            }
               item["*My Price"] = parseFloat(item["Lowest Price"]) - .01 < .2 ? .2 : (parseFloat(item["Lowest Price"]) - .01).toFixed(2)   
         }
 
@@ -90,7 +98,6 @@ function parseTroll (jsonObj) {
         //     item["*My Price"] = (parseFloat(item["T&T Price"])).toFixed(2) 
             }
         }
-
 
         return item
     })
